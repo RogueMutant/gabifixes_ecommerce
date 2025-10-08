@@ -19,7 +19,7 @@ export default function Page() {
           <h2 className="text-lg font-bold mb-4">Filters</h2>
           <FunnelIcon className="w-6 h-6 text-green-900 mb-4" />
         </button>
-        <Filter open={isOpen} onClose={() => setIsOpen(false)} />
+        {/* <Filter open={isOpen} onClose={() => setIsOpen(false)} /> */}
         <ProductWrapper products={productData} />
       </section>
       {/* Best sellers section */}

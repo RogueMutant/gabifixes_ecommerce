@@ -25,7 +25,7 @@ export const productData = [
     name: "Velvet Lipstick",
     stock: 0,
     price: 19.99,
-    image: ["/leave-in-conditioner.jpg"] as [string],
+    image: ["/leave_in_conditioner.jpg"] as [string],
     description: "A rich, matte lipstick for a bold look.",
   },
   {
