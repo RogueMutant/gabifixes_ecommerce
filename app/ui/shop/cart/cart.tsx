@@ -1,14 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {
-  ArrowLeftIcon,
-  HomeIcon,
-  MagnifyingGlassIcon,
-  ShoppingBagIcon,
-  UserIcon,
-  PlusIcon,
-  MinusIcon,
-} from "@heroicons/react/24/solid";
+import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
 
 interface CartItem {
   id: number;

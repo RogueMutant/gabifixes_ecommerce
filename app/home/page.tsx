@@ -6,20 +6,22 @@ import { FunnelIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
 export default function Page() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
       {/* New arrivals section */}
       <section className="mb-4 flex flex-wrap justify-center">
-        <button
-          onClick={() => {}}
-          className="flex items-center gap-2 mb-4 border-b-gray-400 pb-2"
-        >
-          <h2 className="text-xl text-black font-bold mb-6">All Products</h2>
-          <h2 className="text-lg font-bold mb-4">Filters</h2>
-          <FunnelIcon className="w-6 h-6 text-green-900 mb-4" />
-        </button>
-        {/* <Filter open={isOpen} onClose={() => setIsOpen(false)} /> */}
+        <div className="w-full flex items-center justify-between mb-6">
+          <h2 className="text-xl text-black font-semibold">All Products</h2>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="flex items-center gap-2 shadow-gray-700 pb-2"
+          >
+            <FunnelIcon className="w-6 h-6 text-green-900" />
+            <span className="text-lg font-medium">Filters</span>
+          </button>
+        </div>
+        <Filter open={isOpen} onClose={() => setIsOpen(false)} />
         <ProductWrapper products={productData} />
       </section>
       {/* Best sellers section */}

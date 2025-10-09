@@ -1,4 +1,4 @@
-import ShoppingCart from "@/app/ui/cart";
+import ShoppingCart from "@/app/ui/shop/cart/cart";
 
 export default function Page() {
   return (

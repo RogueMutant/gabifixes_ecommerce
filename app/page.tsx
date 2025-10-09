@@ -26,7 +26,7 @@ export default function Home() {
             your perfect match today.
           </p>
           <Link href="/home">
-            <button className="px-5 py-2 bg-pink-400 text-black font-semibold rounded-sm hover:bg-pink-600">
+            <button className="px-5 py-2 bg-green-600 text-black font-semibold rounded-sm hover:bg-green-700 cursor-pointer">
               Shop Now
             </button>
           </Link>
