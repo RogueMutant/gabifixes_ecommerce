@@ -97,7 +97,10 @@ export function Filter({
             </li>
             <li>
               <label className="inline-flex items-center">
-                <input type="checkbox" className="form-checkbox rounded-full" />
+                <input
+                  type="checkbox"
+                  className="checked:border-green-500 rounded-full"
+                />
                 <span className="ml-2">Dry</span>
               </label>
             </li>

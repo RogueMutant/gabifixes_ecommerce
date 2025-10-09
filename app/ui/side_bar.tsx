@@ -64,7 +64,7 @@ export function Sidebar({
           </Link>
         ))}
         <div className="border-t border-gray-700 pt-4">
-          <Link href={"/accounts/user"} className="flex items-center gap-3">
+          <Link href={"/home/profile"} className="flex items-center gap-3">
             <UserIcon className="w-5 h-5 text-white" />
             <span className="text-green-600 font-medium">Profile</span>
           </Link>
