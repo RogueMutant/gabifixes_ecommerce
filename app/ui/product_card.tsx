@@ -12,8 +12,8 @@ export interface IProduct {
 export function ProductCard({ product }: { product: IProduct }) {
   return (
     <div
-      className="bg-white flex flex-col justify-between items-start h-90 
-      w-47 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2"
+      className="bg-white flex flex-col shrink-0 justify-between items-start h-90 
+      w-full sm:w-50 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2"
     >
       <div className="relative w-full h-40 mb-3 overflow-hidden">
         <Image
@@ -46,8 +46,8 @@ export function ProductCard({ product }: { product: IProduct }) {
 
 export default function ProductWrapper({ products }: { products: IProduct[] }) {
   return (
-    <div className="flex flex-col  justify-start gap-4">
-      <div className="flex flex-wrap justify-center gap-3">
+    <div className="flex flex-col justify-start gap-4">
+      <div className="flex flex-wrap justify-between ">
         {products.map((product) => (
           <ProductCard key={product.name} product={product} />
         ))}

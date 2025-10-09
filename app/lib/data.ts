@@ -36,7 +36,7 @@ export const productData = [
     description: "A nourishing shampoo for all hair types.",
   },
   {
-    name: "Sudsy Cleanser",
+    name: "Sud Cleanser",
     stock: 0,
     price: 15.99,
     image: ["/shampoo_bath.jpg"] as [string],

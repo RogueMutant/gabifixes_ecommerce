@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Header */}
-      <header className="px-3 w-full mt-5 text-black mb-6">
+      <header className="px-3 py-2 w-full border-gray-500  text-black mb-6">
         <nav className="flex items-center justify-between w-full">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="px-3 flex-grow w-full">{children}</div>
 
       {/* Footer */}
-      <footer className="px-3 w-full mt-auto pt-4">
+      <footer className="px-3 w-full mt-auto py-2">
         <Footer />
       </footer>
     </div>

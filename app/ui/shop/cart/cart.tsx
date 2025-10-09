@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 
 interface CartItem {
   id: number;
@@ -19,7 +20,7 @@ const ShoppingCart: React.FC = () => {
       size: "100ml",
       quantity: 1,
       price: 45,
-      image: "/api/placeholder/80/80",
+      image: "/pearl_skin.jpg",
     },
     {
       id: 2,
@@ -27,7 +28,7 @@ const ShoppingCart: React.FC = () => {
       size: "50ml",
       quantity: 1,
       price: 38,
-      image: "/api/placeholder/80/80",
+      image: "/hello_glow_body_butter.jpg",
     },
     {
       id: 3,
@@ -35,7 +36,7 @@ const ShoppingCart: React.FC = () => {
       size: "200ml",
       quantity: 1,
       price: 37,
-      image: "/api/placeholder/80/80",
+      image: "/leave_in_conditioner.jpg",
     },
   ]);
 
@@ -65,8 +66,14 @@ const ShoppingCart: React.FC = () => {
                 key={item.id}
                 className="flex items-center mb-6 pb-6 border-b last:border-b-0"
               >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-amber-100 rounded-2xl mr-4 flex items-center justify-center overflow-hidden flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-amber-200 rounded-lg"></div>
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl mr-4 flex items-center justify-center overflow-hidden flex-shrink-0">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={96}
+                    height={96}
+                    className="object-cover rounded-2xl"
+                  />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -114,7 +121,7 @@ const ShoppingCart: React.FC = () => {
 
             {/* Checkout Button */}
             <div className="px-6 pb-6 pt-4">
-              <button className="w-full bg-red-500 text-white py-4 rounded-2xl text-lg font-semibold hover:bg-red-600 transition">
+              <button className="w-full bg-green-500 text-white py-4 rounded-2xl text-lg font-semibold hover:bg-green-600 transition">
                 Proceed to Checkout
               </button>
             </div>

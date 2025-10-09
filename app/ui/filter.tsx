@@ -23,14 +23,14 @@ export function Filter({
       />
       <div
         className={clsx(
-          "fixed pt-4 top-0 right-0 z-50 min-h-screen w-85 flex flex-col bg-white gap-4 px-3 transition-transform duration-300",
+          "fixed pt-4 top-0 right-0 z-50 min-h-screen h-full w-85 flex flex-col bg-white gap-4 px-3 transition-transform duration-300 overflow-y-auto",
           {
             "translate-x-0": open,
             "translate-x-full": !open,
           }
         )}
       >
-        <div className="flex justify-between items-center gap-2 mb-4 border-b-gray-400 pb-2">
+        <div className="flex justify-between items-center gap-2 border-b-gray-400 pb-2">
           <h2 className="text-lg font-semibold mb-4">Filters</h2>
           <button onClick={onClose}>
             <XMarkIcon className="w-6 h-6 text-black mb-4" />
@@ -60,7 +60,7 @@ export function Filter({
             </li>
           </ul>
         </div>
-        <div className="mt-4 mb-4">
+        <div className="mt-3 mb-3">
           <h3 className="font-semibold mb-3">Price Range</h3>
           <ul className="flex gap-2">
             <li className="mb-2">
