@@ -2,45 +2,12 @@
 import React, { useState } from "react";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { CartItem } from "@/app/lib/custom";
 
-interface CartItem {
-  id: number;
-  name: string;
-  size: string;
-  quantity: number;
-  price: number;
-  image: string;
-}
+const ShoppingCart = ({ cartItems }: { cartItems: CartItem[] }) => {
+  const [cart, setCartItems] = useState<CartItem[]>(cartItems);
 
-const ShoppingCart: React.FC = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Hydrating Face Serum",
-      size: "100ml",
-      quantity: 1,
-      price: 45,
-      image: "/pearl_skin.jpg",
-    },
-    {
-      id: 2,
-      name: "Nourishing Night Cream",
-      size: "50ml",
-      quantity: 1,
-      price: 38,
-      image: "/hello_glow_body_butter.jpg",
-    },
-    {
-      id: 3,
-      name: "Gentle Cleansing Milk",
-      size: "200ml",
-      quantity: 1,
-      price: 37,
-      image: "/leave_in_conditioner.jpg",
-    },
-  ]);
-
-  const updateQuantity = (id: number, delta: number) => {
+  const updateQuantity = (id: string, delta: number) => {
     setCartItems((items) =>
       items.map((item) =>
         item.id === id
@@ -50,7 +17,7 @@ const ShoppingCart: React.FC = () => {
     );
   };
 
-  const subtotal = cartItems.reduce(
+  const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
@@ -61,7 +28,7 @@ const ShoppingCart: React.FC = () => {
         <div className="lg:grid lg:grid-cols-3 lg:gap-8">
           {/* Cart Items Section */}
           <div className="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-6 mb-6 lg:mb-0">
-            {cartItems.map((item) => (
+            {cart.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center mb-6 pb-6 border-b last:border-b-0"

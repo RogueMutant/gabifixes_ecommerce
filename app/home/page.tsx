@@ -1,5 +1,5 @@
 "use client";
-import ProductWrapper from "../ui/product_card";
+import { ProductWrapper } from "../ui/product_card";
 import { productData } from "../lib/data";
 import { Filter } from "../ui/filter";
 import { FunnelIcon } from "@heroicons/react/24/outline";
