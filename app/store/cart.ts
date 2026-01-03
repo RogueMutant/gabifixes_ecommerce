@@ -4,6 +4,7 @@ import { CartItem, IProduct } from "@/app/lib/custom";
 interface CartStore {
   cart: CartItem[];
   addToCart: (product: IProduct, quantity: number) => void;
+  removeFromCart: (productId: string) => void;
 }
 
 export const useCart = create<CartStore>((set) => ({
@@ -21,7 +22,6 @@ export const useCart = create<CartStore>((set) => ({
           ),
         };
       }
-
       return {
         cart: [
           ...state.cart,
@@ -35,4 +35,8 @@ export const useCart = create<CartStore>((set) => ({
         ],
       };
     }),
+  removeFromCart: (productId) =>
+    set((state) => ({
+      cart: state.cart.filter((item) => item.id !== productId),
+    })),
 }));

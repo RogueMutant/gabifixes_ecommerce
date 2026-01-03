@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, MinusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { CartItem } from "@/app/lib/custom";
 
@@ -15,6 +15,10 @@ const ShoppingCart = ({ cartItems }: { cartItems: CartItem[] }) => {
           : item
       )
     );
+  };
+
+  const removeItem = (id: string) => {
+    setCartItems((items) => items.filter((item) => item.id !== id));
   };
 
   const subtotal = cart.reduce(
@@ -70,6 +74,12 @@ const ShoppingCart = ({ cartItems }: { cartItems: CartItem[] }) => {
                     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
                   >
                     <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition ml-2"
+                  >
+                    <TrashIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>

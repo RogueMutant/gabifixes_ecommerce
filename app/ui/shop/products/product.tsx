@@ -40,6 +40,9 @@ export const ProductImage = ({ images }: { images: string[] }) => {
 export const ProductDescription = ({ product }: { product: IProduct }) => {
   return (
     <div className="w-full md:w-1/2 md:pl-6 space-y-3">
+      <span className="text-sm text-gray-500 uppercase tracking-widest font-semibold">
+        {product.category}
+      </span>
       <h2 className="text-2xl font-semibold">{product.name}</h2>
       <p className="text-lg font-medium text-green-600">${product.price}</p>
       <p className="text-gray-700 leading-relaxed">{product.description}</p>

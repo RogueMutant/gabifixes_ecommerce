@@ -13,6 +13,7 @@ export interface IProduct {
   ingredients: string;
   howToUse: string;
   reviews: IReview[];
+  category: string;
 }
 
 export interface IReview {

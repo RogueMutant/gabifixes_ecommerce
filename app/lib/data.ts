@@ -27,6 +27,7 @@ export const productData: IProduct[] = [
     howToUse:
       "Apply 2-3 drops to clean skin morning and night. Follow with moisturizer.",
     reviews: [],
+    category: "Skincare",
   },
   {
     id: "2",
@@ -38,6 +39,7 @@ export const productData: IProduct[] = [
     ingredients: "Beeswax, Castor Oil, Pigments",
     howToUse: "Swipe directly onto lips or use a brush for precision.",
     reviews: [],
+    category: "Makeup",
   },
   {
     id: "3",
@@ -49,6 +51,7 @@ export const productData: IProduct[] = [
     ingredients: "Aloe Vera, Coconut Oil, Panthenol",
     howToUse: "Massage into wet hair, lather, and rinse thoroughly.",
     reviews: [],
+    category: "Haircare",
   },
   {
     id: "4",
@@ -61,6 +64,7 @@ export const productData: IProduct[] = [
     howToUse:
       "Apply to damp face, massage gently, and rinse with lukewarm water.",
     reviews: [],
+    category: "Skincare",
   },
 ];
 
