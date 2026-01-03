@@ -26,9 +26,16 @@ export default function ProductForm({
     ? updateProduct.bind(null, product._id)
     : createProduct;
 
+  const handleSubmit = async (formData: FormData) => {
+    const result = await updateProductWithId(formData);
+    if (result?.message) {
+      alert(result.message);
+    }
+  };
+
   return (
     <form
-      action={updateProductWithId}
+      action={handleSubmit}
       className="rounded-md bg-gray-50 dark:bg-gray-900 p-4 md:p-6 text-gray-900 dark:text-gray-100"
     >
       {/* Product Name */}

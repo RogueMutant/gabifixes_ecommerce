@@ -3,6 +3,7 @@ import ProductsTable from "@/app/ui/admin/products/table";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Metadata } from "next";
+import { Suspense } from "react";
 import ToastListener from "@/app/ui/toast-listener";
 
 export const metadata: Metadata = {
@@ -15,7 +16,9 @@ export default async function Page() {
 
   return (
     <main className="w-full">
-      <ToastListener />
+      <Suspense fallback={null}>
+        <ToastListener />
+      </Suspense>
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Products

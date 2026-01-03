@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
+import bcrypt from "bcryptjs";
 
 export async function authenticate(
   prevState: string | undefined,
@@ -29,7 +30,7 @@ export async function authenticate(
 }
 
 export async function signOutAction() {
-  await signOut();
+  await signOut({ redirectTo: "/login" });
 }
 
 // Ensure models are registered
@@ -38,6 +39,25 @@ const loadModels = () => {
 };
 
 // ... Existing Order Actions ...
+
+interface OrderProduct {
+  _id: { toString: () => string };
+  product: { toString: () => string };
+  quantity: number;
+}
+
+interface OrderDocument {
+  _id: { toString: () => string };
+  customer: {
+    _id: { toString: () => string };
+    name: string;
+    email: string;
+  } | null;
+  products: OrderProduct[];
+  createdAt: Date;
+  status: string;
+  totalAmount: number;
+}
 
 export async function fetchOrders() {
   await dbConnect();
@@ -49,7 +69,7 @@ export async function fetchOrders() {
       .sort({ createdAt: -1 })
       .lean();
 
-    return orders.map((order: any) => ({
+    return orders.map((order: OrderDocument) => ({
       ...order,
       _id: order._id.toString(),
       customer: order.customer
@@ -58,7 +78,7 @@ export async function fetchOrders() {
             _id: order.customer._id.toString(),
           }
         : null,
-      products: order.products.map((p: any) => ({
+      products: order.products.map((p) => ({
         ...p,
         _id: p._id.toString(),
         product: p.product.toString(),
@@ -357,5 +377,37 @@ export async function fetchAnalytics() {
       salesData: [],
       topProducts: [],
     };
+  }
+}
+
+export async function updateProfile(prevState: any, formData: FormData) {
+  await dbConnect();
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string; // Optional new password
+  const currentPassword = formData.get("currentPassword") as string;
+  const id = formData.get("id") as string;
+
+  if (!id) return { message: "Error: User ID missing" };
+
+  try {
+    const user = await User.findById(id).select("+password");
+    if (!user) return { message: "Error: User not found" };
+
+    // Verify current password to allow changes
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) return { message: "Error: Incorrect current password" };
+
+    const updateData: any = { name, email };
+    if (password && password.length >= 6) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+
+    await User.findByIdAndUpdate(id, updateData);
+    revalidatePath("/admin/settings");
+    return { message: "Success: Profile updated successfully" };
+  } catch (error) {
+    console.error("Failed to update profile:", error);
+    return { message: "Database Error: Failed to update profile." };
   }
 }

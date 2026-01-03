@@ -1,6 +1,7 @@
 import { fetchCustomers } from "@/app/lib/actions";
 import CustomersTable from "@/app/ui/admin/customers/table";
 import TableSearch from "@/app/ui/admin/table-search";
+import { Suspense } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -24,8 +25,11 @@ export default async function Page({
           Customers
         </h1>
       </div>
+
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <TableSearch placeholder="Search customers..." />
+        <Suspense fallback={<div>Loading search...</div>}>
+          <TableSearch placeholder="Search customers..." />
+        </Suspense>
       </div>
       <CustomersTable customers={customers} />
     </main>

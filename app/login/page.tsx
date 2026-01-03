@@ -2,65 +2,92 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { authenticate } from "@/app/lib/actions";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import {
+  ExclamationCircleIcon,
+  ArrowRightIcon,
+} from "@heroicons/react/24/outline";
 
 export default function LoginPage() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
 
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-        <div className="flex w-full items-end rounded-lg bg-green-900 p-3 md:h-36">
-          <div className="w-32 text-white md:w-36">
-            <h1 className="text-2xl font-bold">Gabi Fixes Admin</h1>
-          </div>
+    <main className="flex min-h-screen bg-white dark:bg-gray-950">
+      {/* Left Side - Visual/Brand */}
+      <div className="hidden lg:flex w-1/2 bg-green-900 relative items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>{" "}
+        {/* Abstract pattern placeholder */}
+        <div className="relative z-10 text-center px-10">
+          <h1 className="text-5xl font-bold text-white mb-6">Gabi Fixes</h1>
+          <p className="text-green-100 text-xl max-w-md mx-auto">
+            Manage your e-commerce platform with ease. Secure, fast, and
+            reliable admin dashboard.
+          </p>
         </div>
-        <form action={dispatch} className="space-y-3">
-          <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-            <h1 className="mb-3 text-2xl">Please log in to continue.</h1>
-            <div className="w-full">
+        {/* Decorational Circles */}
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-green-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+      </div>
+
+      {/* Right Side - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 sm:p-12 lg:p-16">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center lg:text-left">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Welcome back
+            </h2>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              Please enter your details to sign in.
+            </p>
+          </div>
+
+          <form action={dispatch} className="mt-8 space-y-6">
+            <div className="space-y-5">
               <div>
                 <label
-                  className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                   htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  Email
+                  Email address
                 </label>
-                <div className="relative">
+                <div className="mt-1 relative">
                   <input
-                    className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                     id="email"
-                    type="email"
                     name="email"
-                    placeholder="Enter your email address"
+                    type="email"
+                    autoComplete="email"
                     required
+                    className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:border-green-500 focus:ring-green-500 sm:text-sm transition-colors"
+                    placeholder="admin@gabifixes.com"
                   />
-                  {/* Icon placeholder */}
                 </div>
               </div>
-              <div className="mt-4">
+
+              <div>
                 <label
-                  className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                   htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Password
                 </label>
-                <div className="relative">
+                <div className="mt-1 relative">
                   <input
-                    className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                     id="password"
-                    type="password"
                     name="password"
-                    placeholder="Enter password"
+                    type="password"
+                    autoComplete="current-password"
                     required
                     minLength={6}
+                    className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:border-green-500 focus:ring-green-500 sm:text-sm transition-colors"
+                    placeholder="••••••••"
                   />
-                  {/* Icon placeholder */}
                 </div>
               </div>
             </div>
-            <LoginButton />
+
+            <div>
+              <LoginButton />
+            </div>
+
             <div
               className="flex h-8 items-end space-x-1"
               aria-live="polite"
@@ -73,8 +100,21 @@ export default function LoginPage() {
                 </>
               )}
             </div>
-          </div>
-        </form>
+
+            {/* Footer Links/Info */}
+            <div className="mt-6 text-center text-sm">
+              <p className="text-gray-500 dark:text-gray-400">
+                Having trouble?{" "}
+                <a
+                  href="#"
+                  className="font-semibold text-green-600 hover:text-green-500"
+                >
+                  Contact Support
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </main>
   );
@@ -85,11 +125,40 @@ function LoginButton() {
 
   return (
     <button
-      className="mt-4 w-full flex justify-center items-center rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-500"
+      className="group relative flex w-full justify-center rounded-lg bg-green-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
       aria-disabled={pending}
       disabled={pending}
     >
-      Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      {pending ? (
+        <span className="flex items-center gap-2">
+          <svg
+            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          Signing in...
+        </span>
+      ) : (
+        <span className="flex items-center gap-2">
+          Sign in
+          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </span>
+      )}
     </button>
   );
 }
