@@ -52,7 +52,7 @@ export default function ProductsTable({ products }: { products: Product[] }) {
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <ProductImage
-                        url={product.image[0]}
+                        url={"/public/My-logo.png"}
                         alt={product.name}
                         size={40}
                       />

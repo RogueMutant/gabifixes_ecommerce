@@ -6,6 +6,31 @@ import User from "./models/User";
 import Product from "./models/Product";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { signIn, signOut } from "@/auth";
+import { AuthError } from "next-auth";
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData
+) {
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid credentials.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+}
+
+export async function signOutAction() {
+  await signOut();
+}
 
 // Ensure models are registered
 const loadModels = () => {
@@ -234,5 +259,103 @@ export async function deleteUser(id: string) {
   } catch (error) {
     console.error("Failed to delete user:", error);
     return { message: "Database Error: Failed to Delete User." };
+  }
+}
+
+export async function fetchAnalytics() {
+  await dbConnect();
+  loadModels();
+
+  try {
+    const totalRevenueResult = await Order.aggregate([
+      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
+    ]);
+    const totalRevenue = totalRevenueResult[0]?.total || 0;
+
+    const totalOrders = await Order.countDocuments();
+    const totalCustomers = await User.countDocuments({ role: "customer" });
+
+    // Sales over last 7 months (or days depending on data density)
+    // Group by Year-Month
+    const salesData = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(new Date().setMonth(new Date().getMonth() - 6)), // Last 6 months + current
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+          sales: { $sum: "$totalAmount" },
+          orders: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Format for Chart (e.g., "Jan 2025")
+    const formattedSalesData = salesData.map((item: any) => {
+      const date = new Date(item._id + "-01");
+      return {
+        name: date.toLocaleString("default", {
+          month: "short",
+          year: "numeric",
+        }),
+        sales: item.sales,
+        orders: item.orders,
+      };
+    });
+
+    // Top Selling Products
+    // Unwind products array, group by product, count sum
+    const topProducts = await Order.aggregate([
+      { $unwind: "$products" },
+      {
+        $group: {
+          _id: "$products.product",
+          quantity: { $sum: "$products.quantity" },
+        },
+      },
+      { $sort: { quantity: -1 } },
+      { $limit: 3 },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productInfo",
+        },
+      },
+      { $unwind: "$productInfo" },
+      {
+        $project: {
+          _id: 1,
+          quantity: 1,
+          name: "$productInfo.name",
+          price: "$productInfo.price",
+          image: { $arrayElemAt: ["$productInfo.image", 0] },
+        },
+      },
+    ]);
+
+    return {
+      totalRevenue,
+      totalOrders,
+      totalCustomers,
+      salesData: formattedSalesData,
+      topProducts,
+    };
+  } catch (error) {
+    console.error("Failed to fetch analytics:", error);
+    // Return empty data/zeros on failure rather than crashing page
+    return {
+      totalRevenue: 0,
+      totalOrders: 0,
+      totalCustomers: 0,
+      salesData: [],
+      topProducts: [],
+    };
   }
 }
