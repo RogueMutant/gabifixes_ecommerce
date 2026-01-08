@@ -39,45 +39,74 @@ export function Sidebar({
       />
       <div
         className={clsx(
-          "fixed top-0 left-0 z-50 min-h-screen w-72 flex-col bg-black gap-4 px-3 transition-transform duration-300",
+          "fixed top-0 left-0 z-50 min-h-screen w-72 flex-col bg-black gap-4 px-6 transition-transform duration-300",
           {
             "translate-x-0": open,
             "-translate-x-full": !open,
           }
         )}
       >
-        <div className="w-full flex items-center justify-between py-4 mb-6">
-          <h2 className="text-white font-bold">Gabi Fixes</h2>
+        <div className="w-full flex items-center justify-between py-6 mb-6">
+          <h2 className="text-white font-bold text-xl">Gabi Fixes</h2>
           <button onClick={onClose} aria-label="Close sidebar">
             <XMarkIcon className="w-6 h-6 text-white" />
           </button>
         </div>
 
-        {categoryIcons.map(({ href, label, icon: Icon }) => (
+        <div className="flex flex-col gap-6">
+          {categoryIcons.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={label}
+              href={href}
+              className="group flex items-center gap-4"
+              onClick={onClose}
+            >
+              <div className="w-6 flex justify-center">
+                <Icon className="text-white h-6 w-6 group-hover:text-green-500 transition-colors" />
+              </div>
+              <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+                {label}
+              </span>
+            </Link>
+          ))}
+        </div>
+
+        <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col gap-6">
           <Link
-            key={label}
-            href={href}
-            className="flex items-center gap-3 mb-4"
+            href={"/home/profile"}
+            className="group flex items-center gap-4"
+            onClick={onClose}
           >
-            <Icon className="text-white h-5 w-5 mb-1" />
-            <span className="text-green-600 font-light">{label}</span>
-          </Link>
-        ))}
-        <div className="border-t border-gray-700 pt-4">
-          <Link href={"/home/profile"} className="flex items-center gap-3">
-            <UserIcon className="w-5 h-5 text-white" />
-            <span className="text-green-600 font-medium">Profile</span>
+            <div className="w-6 flex justify-center">
+              <UserIcon className="w-6 h-6 text-white group-hover:text-green-500 transition-colors" />
+            </div>
+            <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+              Profile
+            </span>
           </Link>
           <Link
-            href={"accounts/settings"}
-            className="flex items-center gap-3 mt-4"
+            href={"/home/profile"}
+            className="group flex items-center gap-4"
+            onClick={onClose}
           >
-            <WrenchIcon className="w-5 h-5 text-white" />
-            <span className="text-green-600 font-medium">Settings</span>
+            <div className="w-6 flex justify-center">
+              <WrenchIcon className="w-6 h-6 text-white group-hover:text-green-500 transition-colors" />
+            </div>
+            <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+              Settings
+            </span>
           </Link>
-          <Link href={"/signup"} className="flex items-center gap-3 mt-4">
-            <ArrowLeftEndOnRectangleIcon className="w-5 h-5 text-white" />
-            <span className="text-green-600 font-medium">Logout</span>
+          <Link
+            href={"/login"}
+            className="group flex items-center gap-4"
+            onClick={onClose}
+          >
+            <div className="w-6 flex justify-center">
+              <ArrowLeftEndOnRectangleIcon className="w-6 h-6 text-white group-hover:text-green-500 transition-colors" />
+            </div>
+            <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+              Logout
+            </span>
           </Link>
         </div>
       </div>

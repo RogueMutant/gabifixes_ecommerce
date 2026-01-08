@@ -43,8 +43,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Left: Mobile Menu & Logo */}
-            <div className="flex items-center gap-4 lg:w-1/4">
+            {/* Left: Mobile Menu */}
+            <div className="flex items-center lg:w-1/4">
               <button
                 onClick={() => setSidebarOpen(true)}
                 className="lg:hidden p-2 -ml-2 text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
@@ -52,35 +52,44 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               >
                 <RectangleStackIcon className="w-6 h-6" />
               </button>
-              <Link href="/home" className="flex items-center gap-2">
-                <span className="text-xl sm:text-2xl font-black text-gray-900 tracking-tighter uppercase italic">
+            </div>
+
+            {/* Center: Logo (Mobile) & Desktop Navigation */}
+            <div className="flex-1 flex justify-center items-center lg:justify-center">
+              <Link href="/home" className="flex items-center gap-2 lg:hidden">
+                <span className="text-xl font-black text-gray-900 tracking-tighter uppercase italic">
                   Gabi Fixes
                 </span>
                 <div className="w-2 h-2 rounded-full bg-green-500" />
               </Link>
-            </div>
 
-            {/* Center: Desktop Navigation */}
-            <nav className="hidden lg:flex items-center justify-center gap-8 text-sm font-bold text-gray-900 uppercase tracking-widest lg:flex-1">
-              <Link
-                href="/home"
-                className="hover:text-green-600 transition-colors"
-              >
-                Shop
-              </Link>
-              <Link
-                href="/home"
-                className="hover:text-green-600 transition-colors"
-              >
-                New
-              </Link>
-              <Link
-                href="/home"
-                className="hover:text-green-600 transition-colors"
-              >
-                Sale
-              </Link>
-            </nav>
+              <nav className="hidden lg:flex items-center justify-center gap-8 text-sm font-bold text-gray-900 uppercase tracking-widest">
+                <Link href="/home" className="flex items-center gap-2 mr-4">
+                  <span className="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">
+                    Gabi Fixes
+                  </span>
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
+                </Link>
+                <Link
+                  href="/home"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  Shop
+                </Link>
+                <Link
+                  href="/home"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  New
+                </Link>
+                <Link
+                  href="/home"
+                  className="hover:text-green-600 transition-colors"
+                >
+                  Sale
+                </Link>
+              </nav>
+            </div>
 
             {/* Right: Search & Cart */}
             <div className="flex items-center justify-end gap-2 sm:gap-4 lg:w-1/4">

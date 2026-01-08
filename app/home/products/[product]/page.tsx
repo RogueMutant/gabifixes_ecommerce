@@ -1,20 +1,17 @@
-"use client";
-
 import { ProductContainer } from "@/app/ui/shop/products/product";
-import { useParams } from "next/navigation";
-import { productData } from "@/app/lib/data";
+import { fetchProductById } from "@/app/lib/actions";
+import { notFound } from "next/navigation";
 
-export default function Page() {
-  const { product } = useParams();
+export default async function Page(props: {
+  params: Promise<{ product: string }>;
+}) {
+  const params = await props.params;
+  const productId = params.product;
 
-  const selectedProduct = productData.find((p) => p.id === product);
+  const selectedProduct = await fetchProductById(productId);
 
   if (!selectedProduct) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-600">
-        Product not found.
-      </div>
-    );
+    notFound();
   }
 
   return (
