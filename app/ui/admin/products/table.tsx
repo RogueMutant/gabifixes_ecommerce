@@ -10,7 +10,7 @@ import { useToast } from "@/app/ui/toast";
 import { useRouter } from "next/navigation";
 
 interface Product {
-  _id: string;
+  id: string;
   name: string;
   category: string;
   price: number;
@@ -46,13 +46,13 @@ export default function ProductsTable({ products }: { products: Product[] }) {
             <tbody className="bg-white dark:bg-gray-800">
               {products.map((product) => (
                 <tr
-                  key={product._id}
+                  key={product.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <ProductImage
-                        url={"/public/My-logo.png"}
+                        url={product.image[0] || "/public/My-logo.png"}
                         alt={product.name}
                         size={40}
                       />
@@ -73,13 +73,13 @@ export default function ProductsTable({ products }: { products: Product[] }) {
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <Link
-                        href={`/admin/products/${product._id}/edit`}
+                        href={`/admin/products/${product.id}/edit`}
                         className="rounded-md border p-2 hover:bg-gray-100 dark:hover:bg-gray-600 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
                       >
                         <PencilSquareIcon className="w-5" />
                       </Link>
                       <DeleteProductButton
-                        id={product._id}
+                        id={product.id}
                         name={product.name}
                       />
                     </div>

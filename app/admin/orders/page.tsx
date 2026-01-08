@@ -1,8 +1,18 @@
 import { fetchOrders } from "@/app/lib/actions";
 import OrdersTable from "@/app/ui/admin/orders/table";
+import Pagination from "@/app/ui/pagination";
 
-export default async function Page() {
-  const orders = await fetchOrders();
+export default async function Page(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || ""; // Query not yet implemented in fetchOrders
+  const currentPage = Number(searchParams?.page) || 1;
+
+  const { orders, totalPages } = await fetchOrders(query, currentPage);
 
   return (
     <main className="w-full">
@@ -12,6 +22,9 @@ export default async function Page() {
         </h1>
       </div>
       <OrdersTable orders={orders} />
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
     </main>
   );
 }

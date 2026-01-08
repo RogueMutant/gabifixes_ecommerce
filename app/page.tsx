@@ -1,11 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CategoryWrapper } from "./ui/landing_page/category_card";
-import categories from "./lib/data";
+import categoriesMock from "./lib/data";
 import { CardSkeleton } from "./ui/skeletons";
 import { Suspense } from "react";
+import { fetchCategories } from "./lib/actions";
 
-export default function Home() {
+export default async function Home() {
+  const categories = await fetchCategories();
+
   return (
     <main className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -41,7 +44,9 @@ export default function Home() {
 
         {
           <Suspense fallback={<CardSkeleton />}>
-            <CategoryWrapper categories={categories} />
+            <CategoryWrapper
+              categories={categories.length > 0 ? categories : categoriesMock}
+            />
           </Suspense>
         }
 

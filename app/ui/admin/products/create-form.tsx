@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { createProduct, updateProduct } from "@/app/lib/actions";
+import { ICategory } from "@/app/lib/custom";
 
 interface Product {
   _id?: string;
@@ -20,7 +21,7 @@ export default function ProductForm({
   categories,
 }: {
   product?: Product;
-  categories: string[];
+  categories: ICategory[];
 }) {
   const updateProductWithId = product?._id
     ? updateProduct.bind(null, product._id)
@@ -73,8 +74,8 @@ export default function ProductForm({
               Select a category
             </option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+              <option key={cat.name} value={cat.name}>
+                {cat.name}
               </option>
             ))}
           </select>

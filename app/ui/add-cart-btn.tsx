@@ -1,29 +1,38 @@
 import { IProduct } from "../lib/custom";
 import { useCart } from "../store/cart";
 
-export const AddToCartbtn = ({
+export function AddToCartbtn({
   product,
-  quantity = 1,
+  variant = "large",
 }: {
   product: IProduct;
-  quantity?: number;
-}) => {
-  const { addToCart } = useCart();
+  variant?: "small" | "large";
+}) {
+  const addToCart = useCart((state) => state.addToCart);
 
-  const handleAddToCart = () => {
-    addToCart(product, quantity);
-  };
+  if (variant === "small") {
+    return (
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          addToCart(product, 1);
+        }}
+        className="h-8 px-4 bg-green-100 text-green-600 text-xs font-black uppercase tracking-widest rounded-full hover:bg-green-500 hover:text-white transition-all whitespace-nowrap active:scale-95"
+      >
+        Add to Cart
+      </button>
+    );
+  }
 
   return (
-    <>
-      {/* ADD TO CART */}
-      <button
-        onClick={handleAddToCart}
-        className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 disabled:opacity-50"
-        disabled={product.stock === 0}
-      >
-        {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
-      </button>
-    </>
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        addToCart(product, 1);
+      }}
+      className="w-full mt-4 h-12 bg-green-500 text-white text-sm font-black uppercase tracking-widest rounded-xl hover:bg-green-600 transition-all active:scale-95 shadow-md shadow-green-500/20"
+    >
+      Add to Cart
+    </button>
   );
-};
+}

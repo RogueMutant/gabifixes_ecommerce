@@ -2,8 +2,8 @@
 
 import { updateProfile } from "@/app/lib/actions";
 
-import { useFormState, useFormStatus } from "react-dom";
-import { useEffect } from "react";
+import { useFormStatus } from "react-dom";
+import { useActionState, useEffect } from "react";
 import { useToast } from "@/app/ui/toast";
 
 interface User {
@@ -13,7 +13,7 @@ interface User {
 }
 
 export default function SettingsForm({ user }: { user: User }) {
-  const [state, dispatch] = useFormState(updateProfile, null);
+  const [state, dispatch] = useActionState(updateProfile, null);
   const { showToast } = useToast();
 
   useEffect(() => {

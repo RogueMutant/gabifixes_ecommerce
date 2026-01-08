@@ -4,6 +4,7 @@ import dbConnect from "./db";
 import Order from "./models/Order";
 import User from "./models/User";
 import Product from "./models/Product";
+import Category from "./models/Category";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "@/auth";
@@ -35,7 +36,7 @@ export async function signOutAction() {
 
 // Ensure models are registered
 const loadModels = () => {
-  console.log("Models loaded:", !!Order, !!User, !!Product);
+  console.log("Models loaded:", !!Order, !!User, !!Product, !!Category);
 };
 
 // ... Existing Order Actions ...
@@ -59,17 +60,25 @@ interface OrderDocument {
   totalAmount: number;
 }
 
-export async function fetchOrders() {
+export async function fetchOrders(query: string = "", page: number = 1) {
   await dbConnect();
   loadModels();
 
+  const ITEMS_PER_PAGE = 7;
+  const skip = (page - 1) * ITEMS_PER_PAGE;
+
   try {
+    const totalOrders = await Order.countDocuments();
+    const totalPages = Math.ceil(totalOrders / ITEMS_PER_PAGE);
+
     const orders = await Order.find({})
       .populate("customer", "name email")
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE)
       .lean();
 
-    return orders.map((order: OrderDocument) => ({
+    const formattedOrders = orders.map((order: OrderDocument) => ({
       ...order,
       _id: order._id.toString(),
       customer: order.customer
@@ -85,6 +94,8 @@ export async function fetchOrders() {
       })),
       createdAt: order.createdAt.toISOString(),
     }));
+
+    return { orders: formattedOrders, totalPages };
   } catch (error) {
     console.error("Failed to fetch orders:", error);
     throw new Error("Failed to fetch orders.");
@@ -107,24 +118,74 @@ export async function updateOrderStatus(orderId: string, status: string) {
 
 // --- Product Actions ---
 
-export async function fetchProducts(query: string = "") {
+interface ProductFilter {
+  $and: Array<{
+    $or?: Array<{ [key: string]: { $regex: string; $options: string } }>;
+    category?: string;
+    price?: { $gte?: number; $lte?: number };
+    skinType?: string;
+  }>;
+}
+
+export async function fetchProducts(
+  query: string = "",
+  page: number = 1,
+  filters: {
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    skinType?: string;
+  } = {}
+) {
   await dbConnect();
   loadModels();
 
+  const ITEMS_PER_PAGE = 8;
+  const skip = (page - 1) * ITEMS_PER_PAGE;
+
   try {
-    const products = await Product.find({
-      $or: [
-        { name: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
+    const filter: ProductFilter = {
+      $and: [
+        {
+          $or: [
+            { name: { $regex: query, $options: "i" } },
+            { category: { $regex: query, $options: "i" } },
+          ],
+        },
       ],
-    })
+    };
+
+    if (filters.category && filters.category !== "All Categories") {
+      filter.$and.push({ category: filters.category });
+    }
+
+    if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+      const priceFilter: { $gte?: number; $lte?: number } = {};
+      if (filters.minPrice !== undefined) priceFilter.$gte = filters.minPrice;
+      if (filters.maxPrice !== undefined) priceFilter.$lte = filters.maxPrice;
+      filter.$and.push({ price: priceFilter });
+    }
+
+    if (filters.skinType && filters.skinType !== "All Types") {
+      filter.$and.push({ skinType: filters.skinType });
+    }
+
+    const totalProducts = await Product.countDocuments(filter as any);
+    const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+    const products = await Product.find(filter as any)
       .sort({ name: 1 })
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE)
       .lean();
 
-    return products.map((product: any) => ({
+    const formattedProducts = products.map((product: any) => ({
       ...product,
-      _id: product._id.toString(),
+      id: product._id.toString(),
+      image: product.images || product.image || [], // Handle both model versions if necessary
     }));
+
+    return { products: formattedProducts, totalPages };
   } catch (error) {
     console.error("Failed to fetch products:", error);
     throw new Error("Failed to fetch products.");
@@ -139,8 +200,9 @@ export async function fetchProductById(id: string) {
     const product = await Product.findById(id).lean();
     if (!product) return null;
     return {
-      ...product,
-      _id: product._id.toString(),
+      ...(product as any),
+      id: (product as any)._id.toString(),
+      image: (product as any).images || (product as any).image || [],
     };
   } catch (error) {
     console.error("Failed to fetch product:", error);
@@ -215,26 +277,11 @@ export async function fetchCategories() {
   loadModels();
 
   try {
-    // Fetch distinct categories from existing products
-    // In a real app with a dedicated Category model, we'd fetch from there.
-    // Here we'll get unique values from the Product collection and merge with standard ones.
-    const productCategories = await Product.distinct("category");
-
-    // Default standard categories to ensure they are always available even if no products exist
-    const defaultCategories = [
-      "Skincare",
-      "Makeup",
-      "Haircare",
-      "Bodycare",
-      "Fragrance",
-    ];
-
-    // Merge and remove duplicates
-    const allCategories = Array.from(
-      new Set([...defaultCategories, ...productCategories])
-    ).sort();
-
-    return allCategories;
+    const categories = await Category.find({}).sort({ name: 1 }).lean();
+    return categories.map((cat: any) => ({
+      ...cat,
+      _id: cat._id.toString(),
+    }));
   } catch (error) {
     console.error("Failed to fetch categories:", error);
     return [];

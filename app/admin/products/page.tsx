@@ -6,13 +6,23 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import ToastListener from "@/app/ui/toast-listener";
 
+import Pagination from "@/app/ui/pagination";
+
 export const metadata: Metadata = {
   title: "Products | Gabi Fixes Admin",
 };
 
-export default async function Page() {
-  // Search params could be added here
-  const products = await fetchProducts();
+export default async function Page(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
+  const { products, totalPages } = await fetchProducts(query, currentPage);
 
   return (
     <main className="w-full">
@@ -32,6 +42,9 @@ export default async function Page() {
         </Link>
       </div>
       <ProductsTable products={products} />
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
     </main>
   );
 }

@@ -13,46 +13,65 @@ export function ProductCard({ product }: { product: IProduct }) {
   return (
     <div
       onClick={handleClick}
-      className="cursor-pointer bg-white border-2 shadow-md rounded-lg p-4 hover:shadow-lg transition-all duration-200 flex flex-col items-center w-46"
+      className="group cursor-pointer flex flex-col w-full"
     >
-      <div className="relative w-40 h-48 mb-3">
+      <div className="relative aspect-square mb-5 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shadow-sm transition-shadow group-hover:shadow-md">
         <Image
           src={product.image[0]}
           alt={product.name}
           fill
-          className="object-cover rounded-lg"
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
       </div>
-      <div className="text-left w-full">
-        <h3 className="text-sm font-semibold text-gray-800">{product.name}</h3>
-        <p className="text-green-600 font-medium mt-1">${product.price}</p>
-        {product.stock > 0 ? (
-          <span className="text-sm text-gray-500">In stock</span>
-        ) : (
-          <span className="text-sm text-red-500">Out of stock</span>
-        )}
+      <div className="flex flex-col gap-1 px-1">
+        <h3 className="text-base font-bold text-gray-900 leading-tight group-hover:text-green-600 transition-colors">
+          {product.name}
+        </h3>
+        <div className="flex items-center justify-between mt-1">
+          <p className="text-lg font-black text-green-600 tracking-tight">
+            ${product.price.toFixed(2)}
+          </p>
+          <div onClick={(e) => e.stopPropagation()}>
+            <AddToCartbtn product={product} variant="small" />
+          </div>
+        </div>
       </div>
-      <AddToCartbtn product={product} />
     </div>
   );
 }
 
 export function ProductWrapper({ products }: { products: IProduct[] }) {
   return (
-    <div className="flex flex-col justify-center gap-4">
-      <div className="flex flex-wrap gap-4">
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">
+          All Products
+        </h2>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest hidden sm:block">
+            Sort by
+          </span>
+          <select
+            className="bg-transparent text-sm font-bold text-gray-900 border-2 border-gray-100 rounded-full py-2 px-6 pr-10 outline-none focus:border-green-500 transition-all appearance-none cursor-pointer"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23111827'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\")",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 1rem center",
+              backgroundSize: "1rem",
+            }}
+          >
+            <option>popularity</option>
+            <option>newest</option>
+            <option>price: low to high</option>
+            <option>price: high to low</option>
+          </select>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
-
-      {/* Pagination placeholder */}
-      <div className="flex gap-2 justify-center items-center">
-        <p className="bg-green-500 text-white px-4 py-2 rounded-full">1</p>
-        <p className="bg-green-200 text-gray-400 px-4 py-2 rounded-full">2</p>
-        <p className="bg-green-200 text-gray-400 px-4 py-2 rounded-full">3</p>
-        <p className="bg-green-200 text-gray-400 px-4 py-2 rounded-full">...</p>
-        <p className="bg-green-200 text-gray-400 px-4 py-2 rounded-full">8</p>
       </div>
     </div>
   );
