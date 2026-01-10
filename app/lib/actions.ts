@@ -181,6 +181,7 @@ export async function fetchProducts(
 
     const formattedProducts = products.map((product: any) => ({
       ...product,
+      _id: product._id.toString(),
       id: product._id.toString(),
       image: product.images || product.image || [], // Handle both model versions if necessary
     }));
@@ -201,6 +202,7 @@ export async function fetchProductById(id: string) {
     if (!product) return null;
     return {
       ...(product as any),
+      _id: (product as any)._id.toString(),
       id: (product as any)._id.toString(),
       image: (product as any).images || (product as any).image || [],
     };
@@ -281,6 +283,7 @@ export async function fetchCategories() {
     return categories.map((cat: any) => ({
       ...cat,
       _id: cat._id.toString(),
+      id: cat._id.toString(),
     }));
   } catch (error) {
     console.error("Failed to fetch categories:", error);
@@ -412,7 +415,10 @@ export async function fetchAnalytics() {
       totalOrders,
       totalCustomers,
       salesData: formattedSalesData,
-      topProducts,
+      topProducts: topProducts.map((p: any) => ({
+        ...p,
+        _id: p._id.toString(),
+      })),
     };
   } catch (error) {
     console.error("Failed to fetch analytics:", error);
