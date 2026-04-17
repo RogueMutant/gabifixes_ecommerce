@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { montserrat, poppins } from "./ui/fonts";
+import { montserrat, cormorant } from "./ui/fonts";
 import "././ui/globals.css";
 
 export const metadata: Metadata = {
-  title: "Gabi fixes ecommerce",
-  description: "an ecommerce app",
+  title: "Gabi Fixes | Premium Skincare",
+  description: "Discover curated skincare essentials crafted for radiant, healthy skin.",
 };
 
 export default function RootLayout({
@@ -13,9 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-[#FAF8F5]">
       <body
-        className={`${montserrat.className} ${poppins.className} antialiased`}
+        className={`${montserrat.variable} ${cormorant.variable} antialiased font-sans`}
       >
         {children}
       </body>

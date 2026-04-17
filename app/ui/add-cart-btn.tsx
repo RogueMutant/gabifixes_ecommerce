@@ -17,9 +17,10 @@ export function AddToCartbtn({
           e.stopPropagation();
           addToCart(product, 1);
         }}
-        className="h-8 px-4 bg-green-100 text-green-600 text-xs font-black uppercase tracking-widest rounded-full hover:bg-green-500 hover:text-white transition-all whitespace-nowrap active:scale-95"
+        disabled={product.stock === 0}
+        className="h-10 px-5 bg-forest text-cream text-xs tracking-[0.1em] uppercase font-semibold hover:bg-forest-light transition-all whitespace-nowrap active:scale-[0.98] shadow-md shadow-forest/25 hover:shadow-lg hover:shadow-forest/35 disabled:bg-stone/30 disabled:shadow-none disabled:cursor-not-allowed"
       >
-        Add to Cart
+        {product.stock === 0 ? "Sold Out" : "Add"}
       </button>
     );
   }
@@ -30,9 +31,10 @@ export function AddToCartbtn({
         e.stopPropagation();
         addToCart(product, 1);
       }}
-      className="w-full mt-4 h-12 bg-green-500 text-white text-sm font-black uppercase tracking-widest rounded-xl hover:bg-green-600 transition-all active:scale-95 shadow-md shadow-green-500/20"
+      disabled={product.stock === 0}
+      className="w-full mt-4 py-4 bg-forest text-cream text-sm tracking-[0.15em] uppercase font-semibold hover:bg-forest-light transition-all active:scale-[0.98] shadow-lg shadow-forest/30 hover:shadow-xl hover:shadow-forest/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md disabled:bg-stone/30 disabled:shadow-none disabled:cursor-not-allowed"
     >
-      Add to Cart
+      {product.stock === 0 ? "Sold Out" : "Add to Cart"}
     </button>
   );
 }

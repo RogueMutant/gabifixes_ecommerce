@@ -1,8 +1,11 @@
 "use client";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, CheckIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+
+const CATEGORIES = ["Makeup", "Skincare", "Fragrance", "Haircare"];
+const SKIN_TYPES = ["Oily", "Dry", "Combination", "Sensitive", "All"];
 
 export function Filter({
   open,
@@ -17,13 +20,20 @@ export function Filter({
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const [localFilters, setLocalFilters] = useState({
+  // Initialize from URL params
+  const getInitialFilters = useCallback(() => ({
     category: searchParams.get("category") || "",
     minPrice: searchParams.get("minPrice") || "0",
     maxPrice: searchParams.get("maxPrice") || "200",
     skintype: searchParams.get("skintype") || "",
-    brand: searchParams.get("brand") || "",
-  });
+  }), [searchParams]);
+
+  const [localFilters, setLocalFilters] = useState(getInitialFilters);
+
+  // Sync state when URL changes
+  useEffect(() => {
+    setLocalFilters(getInitialFilters());
+  }, [getInitialFilters]);
 
   const handleFilterChange = (name: string, value: string) => {
     setLocalFilters((prev) => ({ ...prev, [name]: value }));
@@ -33,61 +43,97 @@ export function Filter({
     const params = new URLSearchParams(searchParams);
     params.set("page", "1");
 
-    if (localFilters.category) params.set("category", localFilters.category);
-    else params.delete("category");
+    // Category filter
+    if (localFilters.category) {
+      params.set("category", localFilters.category);
+    } else {
+      params.delete("category");
+    }
 
-    if (localFilters.minPrice) params.set("minPrice", localFilters.minPrice);
-    if (localFilters.maxPrice) params.set("maxPrice", localFilters.maxPrice);
+    // Price filters
+    if (localFilters.minPrice && localFilters.minPrice !== "0") {
+      params.set("minPrice", localFilters.minPrice);
+    } else {
+      params.delete("minPrice");
+    }
 
-    if (localFilters.skintype) params.set("skintype", localFilters.skintype);
-    else params.delete("skintype");
+    if (localFilters.maxPrice && localFilters.maxPrice !== "200") {
+      params.set("maxPrice", localFilters.maxPrice);
+    } else {
+      params.delete("maxPrice");
+    }
 
-    if (localFilters.brand) params.set("brand", localFilters.brand);
-    else params.delete("brand");
+    // Skin type filter
+    if (localFilters.skintype && localFilters.skintype !== "All") {
+      params.set("skintype", localFilters.skintype);
+    } else {
+      params.delete("skintype");
+    }
 
     replace(`${pathname}?${params.toString()}`);
     if (!inline) onClose();
   };
 
+  const clearFilters = () => {
+    setLocalFilters({
+      category: "",
+      minPrice: "0",
+      maxPrice: "200",
+      skintype: "",
+    });
+    const params = new URLSearchParams();
+    const query = searchParams.get("query");
+    if (query) params.set("query", query);
+    params.set("page", "1");
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  const hasActiveFilters =
+    localFilters.category ||
+    localFilters.skintype ||
+    localFilters.minPrice !== "0" ||
+    localFilters.maxPrice !== "200";
+
   const content = (
-    <div className={clsx("flex flex-col gap-10", { "p-6": !inline })}>
+    <div className={clsx("flex flex-col gap-8", { "p-6": !inline })}>
       {!inline && (
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tighter">
-            Filters
-          </h2>
-          <button onClick={onClose}>
-            <XMarkIcon className="w-8 h-8 text-gray-900" />
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-serif text-2xl text-charcoal">Refine</h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-charcoal hover:text-forest transition-colors"
+          >
+            <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
       )}
 
       {inline && (
-        <h2 className="text-3xl font-black text-gray-900 mb-8 uppercase tracking-tighter">
-          Filters
-        </h2>
+        <h2 className="font-serif text-2xl text-charcoal mb-2">Refine</h2>
       )}
 
       {/* Category Section */}
       <div>
-        <h3 className="text-base font-bold text-gray-900 mb-6 uppercase tracking-widest">
+        <h3 className="text-xs tracking-[0.15em] uppercase text-charcoal font-medium mb-4">
           Category
         </h3>
-        <div className="space-y-4">
-          {["Makeup", "Skincare", "Fragrance", "Haircare"].map((cat) => (
-            <label key={cat} className="group flex items-center cursor-pointer">
+        <div className="space-y-2">
+          {CATEGORIES.map((cat) => (
+            <label key={cat} className="group flex items-center cursor-pointer py-1">
               <div className="relative flex items-center justify-center w-5 h-5">
                 <input
                   type="radio"
                   name="category"
                   className="peer sr-only"
                   checked={localFilters.category === cat}
-                  onChange={() => handleFilterChange("category", cat)}
+                  onChange={() => handleFilterChange("category", localFilters.category === cat ? "" : cat)}
                 />
-                <div className="w-5 h-5 border-2 border-gray-300 rounded-full peer-checked:border-green-500 transition-all" />
-                <div className="absolute w-2.5 h-2.5 bg-green-500 rounded-full scale-0 peer-checked:scale-100 transition-transform" />
+                <div className="w-5 h-5 border border-stone/40 peer-checked:border-forest peer-checked:bg-forest transition-all" />
+                {localFilters.category === cat && (
+                  <CheckIcon className="absolute w-3 h-3 text-cream" strokeWidth={3} />
+                )}
               </div>
-              <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">
+              <span className="ml-3 text-sm text-stone group-hover:text-charcoal transition-colors">
                 {cat}
               </span>
             </label>
@@ -97,81 +143,50 @@ export function Filter({
 
       {/* Price Range Section */}
       <div>
-        <h3 className="text-base font-bold text-gray-900 mb-6 uppercase tracking-widest">
+        <h3 className="text-xs tracking-[0.15em] uppercase text-charcoal font-medium mb-4">
           Price Range
         </h3>
-        <div className="px-2">
-          <input
-            type="range"
-            min="0"
-            max="200"
-            step="10"
-            value={localFilters.maxPrice}
-            onChange={(e) => handleFilterChange("maxPrice", e.target.value)}
-            className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-500"
-          />
-          <div className="flex justify-between mt-4 text-xs font-bold text-gray-400">
-            <span>$0</span>
-            <span>${localFilters.maxPrice}</span>
+        <div className="space-y-4">
+          <div>
+            <input
+              type="range"
+              min="0"
+              max="200"
+              step="10"
+              value={localFilters.maxPrice}
+              onChange={(e) => handleFilterChange("maxPrice", e.target.value)}
+              className="w-full h-1 bg-stone/20 appearance-none cursor-pointer accent-forest [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-forest [&::-webkit-slider-thumb]:cursor-pointer"
+            />
+            <div className="flex justify-between mt-3 text-xs text-stone">
+              <span>$0</span>
+              <span className="text-charcoal font-medium">Up to ${localFilters.maxPrice}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Brand Section (Design match) */}
-      <div className="hidden">
-        {" "}
-        {/* Hide brands as per user request to remove from nav, if applicable here too */}
-        <h3 className="text-base font-bold text-gray-900 mb-6 uppercase tracking-widest">
-          Brand
-        </h3>
-        <div className="space-y-4">
-          {["Retro Cosmetics", "Vintage Beauty", "Glamour Co."].map((brand) => (
-            <label
-              key={brand}
-              className="group flex items-center cursor-pointer"
-            >
-              <div className="relative flex items-center justify-center w-5 h-5">
-                <input
-                  type="radio"
-                  name="brand"
-                  className="peer sr-only"
-                  checked={localFilters.brand === brand}
-                  onChange={() => handleFilterChange("brand", brand)}
-                />
-                <div className="w-5 h-5 border-2 border-gray-300 rounded-full peer-checked:border-green-500 transition-all" />
-                <div className="absolute w-2.5 h-2.5 bg-green-500 rounded-full scale-0 peer-checked:scale-100 transition-transform" />
-              </div>
-              <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">
-                {brand}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Skin Type Section (Design match) */}
+      {/* Skin Type Section */}
       <div>
-        <h3 className="text-base font-bold text-gray-900 mb-6 uppercase tracking-widest">
+        <h3 className="text-xs tracking-[0.15em] uppercase text-charcoal font-medium mb-4">
           Skin Type
         </h3>
-        <div className="space-y-4">
-          {["Oily", "Dry", "Combination", "Sensitive"].map((type) => (
-            <label
-              key={type}
-              className="group flex items-center cursor-pointer"
-            >
+        <div className="space-y-2">
+          {SKIN_TYPES.map((type) => (
+            <label key={type} className="group flex items-center cursor-pointer py-1">
               <div className="relative flex items-center justify-center w-5 h-5">
                 <input
                   type="radio"
                   name="skintype"
                   className="peer sr-only"
                   checked={localFilters.skintype === type}
-                  onChange={() => handleFilterChange("skintype", type)}
+                  onChange={() => handleFilterChange("skintype", localFilters.skintype === type ? "" : type)}
                 />
-                <div className="w-5 h-5 border-2 border-gray-300 rounded-full peer-checked:border-green-500 transition-all" />
-                <div className="absolute w-2.5 h-2.5 bg-green-500 rounded-full scale-0 peer-checked:scale-100 transition-transform" />
+                <div className="w-5 h-5 border border-stone/40 peer-checked:border-forest peer-checked:bg-forest transition-all" />
+                {localFilters.skintype === type && (
+                  <CheckIcon className="absolute w-3 h-3 text-cream" strokeWidth={3} />
+                )}
               </div>
-              <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">
+              <span className="ml-3 text-sm text-stone group-hover:text-charcoal transition-colors">
                 {type}
               </span>
             </label>
@@ -179,12 +194,23 @@ export function Filter({
         </div>
       </div>
 
-      <button
-        onClick={applyFilters}
-        className="w-full h-14 bg-green-500 text-white rounded-full text-sm font-black uppercase tracking-widest hover:bg-green-600 transition-all shadow-lg active:scale-95 mt-4"
-      >
-        Apply Filters
-      </button>
+      {/* Action Buttons */}
+      <div className="flex flex-col gap-3 mt-4 pt-6 border-t border-stone/10">
+        <button
+          onClick={applyFilters}
+          className="w-full py-4 bg-forest text-cream text-sm tracking-[0.15em] uppercase font-semibold hover:bg-forest-light transition-all shadow-lg shadow-forest/30 hover:shadow-xl hover:shadow-forest/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md"
+        >
+          Apply Filters
+        </button>
+        {hasActiveFilters && (
+          <button
+            onClick={clearFilters}
+            className="w-full py-3 border border-stone/30 text-charcoal text-xs tracking-[0.15em] uppercase font-medium hover:border-charcoal hover:bg-stone/5 transition-all"
+          >
+            Clear All
+          </button>
+        )}
+      </div>
     </div>
   );
 
@@ -194,7 +220,7 @@ export function Filter({
     <>
       <div
         className={clsx(
-          "fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 backdrop-blur-sm",
+          "fixed inset-0 bg-charcoal/50 z-40 transition-opacity duration-300",
           {
             "opacity-100 pointer-events-auto": open,
             "opacity-0 pointer-events-none": !open,
@@ -204,7 +230,7 @@ export function Filter({
       />
       <div
         className={clsx(
-          "fixed top-0 right-0 z-50 h-full w-80 bg-white transition-transform duration-300 overflow-y-auto",
+          "fixed top-0 right-0 z-50 h-full w-80 bg-cream transition-transform duration-300 overflow-y-auto",
           {
             "translate-x-0": open,
             "translate-x-full": !open,

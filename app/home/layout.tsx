@@ -1,6 +1,6 @@
 "use client";
 import { useState, Suspense } from "react";
-import { montserrat } from "../ui/fonts";
+import { cormorant, montserrat } from "../ui/fonts";
 import { Sidebar } from "../ui/side_bar";
 import { Filter } from "../ui/filter";
 import { Footer } from "../ui/footer";
@@ -9,13 +9,13 @@ import { SearchableHeader } from "../ui/searchable-header";
 // Fallback header without search functionality
 function HeaderFallback({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <header className="sticky top-0 z-40 w-full bg-cream/90 backdrop-blur-md border-b border-stone/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           <div className="flex items-center lg:w-1/4">
             <button
               onClick={onMenuClick}
-              className="lg:hidden p-2 -ml-2 text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+              className="lg:hidden p-2 -ml-2 text-charcoal hover:bg-cream-dark rounded-full transition-colors"
               aria-label="Open menu"
             >
               <svg
@@ -27,14 +27,14 @@ function HeaderFallback({ onMenuClick }: { onMenuClick: () => void }) {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
             </button>
           </div>
           <div className="flex-1 flex justify-center">
-            <span className="text-xl font-black text-gray-900 tracking-tighter uppercase italic">
+            <span className="font-serif text-2xl text-charcoal tracking-wide">
               Gabi Fixes
             </span>
           </div>
@@ -50,7 +50,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${montserrat.className} min-h-screen bg-white flex flex-col`}
+      className={`${montserrat.variable} ${cormorant.variable} min-h-screen bg-cream flex flex-col font-sans`}
     >
       {/* Mobile Sidebar (Modal) */}
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -63,14 +63,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </Suspense>
 
       {/* Main Container */}
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <div className="flex flex-col lg:flex-row gap-12">
+      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
           {/* Desktop Sidebar (Persistent) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-32">
+            <div className="sticky top-28">
               <Suspense
                 fallback={
-                  <div className="h-96 w-full bg-gray-50 animate-pulse rounded-xl" />
+                  <div className="h-96 w-full bg-cream-dark animate-pulse" />
                 }
               >
                 <Filter open={true} onClose={() => {}} inline={true} />

@@ -118,13 +118,15 @@ export async function updateOrderStatus(orderId: string, status: string) {
 
 // --- Product Actions ---
 
+interface ProductFilterCondition {
+  $or?: Array<{ [key: string]: { $regex: string; $options: string } }>;
+  category?: string;
+  price?: { $gte?: number; $lte?: number };
+  skinType?: string | { $in: string[] };
+}
+
 interface ProductFilter {
-  $and: Array<{
-    $or?: Array<{ [key: string]: { $regex: string; $options: string } }>;
-    category?: string;
-    price?: { $gte?: number; $lte?: number };
-    skinType?: string;
-  }>;
+  $and: ProductFilterCondition[];
 }
 
 export async function fetchProducts(
@@ -145,35 +147,53 @@ export async function fetchProducts(
 
   try {
     const filter: ProductFilter = {
-      $and: [
-        {
-          $or: [
-            { name: { $regex: query, $options: "i" } },
-            { category: { $regex: query, $options: "i" } },
-          ],
-        },
-      ],
+      $and: [],
     };
 
+    // Search query filter - only add if query exists
+    if (query && query.trim()) {
+      filter.$and.push({
+        $or: [
+          { name: { $regex: query.trim(), $options: "i" } },
+          { category: { $regex: query.trim(), $options: "i" } },
+          { description: { $regex: query.trim(), $options: "i" } },
+        ],
+      });
+    }
+
+    // Category filter
     if (filters.category && filters.category !== "All Categories") {
       filter.$and.push({ category: filters.category });
     }
 
+    // Price range filter
     if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
       const priceFilter: { $gte?: number; $lte?: number } = {};
-      if (filters.minPrice !== undefined) priceFilter.$gte = filters.minPrice;
-      if (filters.maxPrice !== undefined) priceFilter.$lte = filters.maxPrice;
-      filter.$and.push({ price: priceFilter });
+      if (filters.minPrice !== undefined && filters.minPrice > 0) {
+        priceFilter.$gte = filters.minPrice;
+      }
+      if (filters.maxPrice !== undefined && filters.maxPrice < 200) {
+        priceFilter.$lte = filters.maxPrice;
+      }
+      if (Object.keys(priceFilter).length > 0) {
+        filter.$and.push({ price: priceFilter });
+      }
     }
 
-    if (filters.skinType && filters.skinType !== "All Types") {
-      filter.$and.push({ skinType: filters.skinType });
+    // Skin type filter - match specific type or "All" products
+    if (filters.skinType && filters.skinType !== "All") {
+      filter.$and.push({
+        skinType: { $in: [filters.skinType, "All"] },
+      });
     }
 
-    const totalProducts = await Product.countDocuments(filter as any);
+    // If no conditions, match all products
+    const queryFilter = filter.$and.length > 0 ? filter : {};
+
+    const totalProducts = await Product.countDocuments(queryFilter as any);
     const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
-    const products = await Product.find(filter as any)
+    const products = await Product.find(queryFilter as any)
       .sort({ name: 1 })
       .skip(skip)
       .limit(ITEMS_PER_PAGE)
@@ -183,7 +203,8 @@ export async function fetchProducts(
       ...product,
       _id: product._id.toString(),
       id: product._id.toString(),
-      image: product.images || product.image || [], // Handle both model versions if necessary
+      image: product.images || product.image || [],
+      skinType: product.skinType || "All",
     }));
 
     return { products: formattedProducts, totalPages };
