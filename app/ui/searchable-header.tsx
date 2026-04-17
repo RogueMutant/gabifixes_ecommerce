@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { ShoppingCartIcon } from "./shopping_cart";
 import {
   RectangleStackIcon,
@@ -12,20 +12,39 @@ import { useDebouncedCallback } from "use-debounce";
 
 export function SearchableHeader({ onMenuClick }: { onMenuClick: () => void }) {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const handleSearch = useDebouncedCallback((term: string) => {
+  // Debounced search with 400ms delay
+  const debouncedSearch = useDebouncedCallback((term: string) => {
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams);
+      params.set("page", "1");
+      if (term.trim()) {
+        params.set("query", term.trim());
+      } else {
+        params.delete("query");
+      }
+      replace(`${pathname}?${params.toString()}`);
+    });
+  }, 400);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    debouncedSearch(value);
+  };
+
+  const clearSearch = () => {
+    setSearchValue("");
     const params = new URLSearchParams(searchParams);
+    params.delete("query");
     params.set("page", "1");
-    if (term) {
-      params.set("query", term);
-    } else {
-      params.delete("query");
-    }
     replace(`${pathname}?${params.toString()}`);
-  }, 300);
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-cream/95 backdrop-blur-md border-b border-stone/10">
@@ -84,11 +103,24 @@ export function SearchableHeader({ onMenuClick }: { onMenuClick: () => void }) {
               <input
                 type="text"
                 placeholder="Search..."
-                onChange={(e) => handleSearch(e.target.value)}
-                defaultValue={searchParams.get("query")?.toString()}
-                className="w-40 lg:w-52 bg-cream-dark border border-stone/20 py-2.5 px-4 pl-10 text-sm text-charcoal placeholder:text-stone focus:border-forest focus:outline-none transition-colors"
+                value={searchValue || searchParams.get("query") || ""}
+                onChange={handleSearchChange}
+                className="w-40 lg:w-52 bg-cream-dark border border-stone/20 py-2.5 px-4 pl-10 pr-8 text-sm text-charcoal placeholder:text-stone focus:border-forest focus:outline-none transition-colors"
               />
               <MagnifyingGlassIcon className="w-4 h-4 text-stone absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-forest transition-colors" />
+              {isPending && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <div className="w-4 h-4 border-2 border-stone/30 border-t-forest animate-spin rounded-full" />
+                </div>
+              )}
+              {!isPending && (searchValue || searchParams.get("query")) && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone hover:text-charcoal transition-colors"
+                >
+                  <XMarkIcon className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
             {/* Mobile Search Icon */}
@@ -130,20 +162,28 @@ export function SearchableHeader({ onMenuClick }: { onMenuClick: () => void }) {
 
         {/* Mobile Search Overlay */}
         {isMobileSearchOpen && (
-          <div className="absolute inset-0 bg-cream z-50 flex items-center px-4 sm:hidden">
+          <div className="absolute inset-0 bg-cream z-50 flex items-center px-4 sm:hidden h-16">
             <div className="relative flex-1">
               <input
                 type="text"
                 autoFocus
                 placeholder="Search products..."
-                onChange={(e) => handleSearch(e.target.value)}
-                defaultValue={searchParams.get("query")?.toString()}
-                className="w-full bg-cream-dark border border-stone/20 py-3 px-4 pl-10 text-base text-charcoal placeholder:text-stone focus:border-forest focus:outline-none transition-colors"
+                value={searchValue || searchParams.get("query") || ""}
+                onChange={handleSearchChange}
+                className="w-full bg-cream-dark border border-stone/20 py-3 px-4 pl-10 pr-10 text-base text-charcoal placeholder:text-stone focus:border-forest focus:outline-none transition-colors"
               />
               <MagnifyingGlassIcon className="w-5 h-5 text-stone absolute left-3.5 top-1/2 -translate-y-1/2" />
+              {isPending && (
+                <div className="absolute right-12 top-1/2 -translate-y-1/2">
+                  <div className="w-4 h-4 border-2 border-stone/30 border-t-forest animate-spin rounded-full" />
+                </div>
+              )}
             </div>
             <button
-              onClick={() => setIsMobileSearchOpen(false)}
+              onClick={() => {
+                setIsMobileSearchOpen(false);
+                setSearchValue("");
+              }}
               className="ml-4 p-2 text-charcoal"
             >
               <XMarkIcon className="w-6 h-6" />

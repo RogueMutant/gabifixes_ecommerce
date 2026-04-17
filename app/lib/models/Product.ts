@@ -23,6 +23,11 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  skinType: {
+    type: String,
+    enum: ["Oily", "Dry", "Combination", "Sensitive", "All"],
+    default: "All",
+  },
   images: {
     type: [String],
     default: [],
