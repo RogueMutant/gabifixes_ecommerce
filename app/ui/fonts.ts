@@ -1,4 +1,4 @@
-import { Montserrat, Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Montserrat, Geist, Geist_Mono, Poppins, Cormorant_Garamond } from "next/font/google";
 
 export const montserrat = Montserrat({
   subsets: ["latin"],
@@ -20,4 +20,10 @@ export const geistSans = Geist({
 export const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+export const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cormorant",
 });
