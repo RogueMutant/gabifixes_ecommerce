@@ -11,11 +11,12 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import clsx from "clsx";
+
 const categoryIcons = [
   { href: "/home", label: "Home", icon: HomeIcon },
-  { href: "/products/makeup", label: "MakeUp", icon: PaintBrushIcon },
+  { href: "/products/makeup", label: "Makeup", icon: PaintBrushIcon },
   { href: "/products/skincare", label: "Skincare", icon: SparklesIcon },
-  { href: "/products/haircare", label: "HairCare", icon: ScissorsIcon },
+  { href: "/products/haircare", label: "Haircare", icon: ScissorsIcon },
 ];
 
 export function Sidebar({
@@ -27,84 +28,91 @@ export function Sidebar({
 }) {
   return (
     <>
+      {/* Backdrop */}
       <div
         className={clsx(
-          "fixed inset-0 bg-black bg-opacity-40 z-40 transition-opacity duration-300",
+          "fixed inset-0 bg-charcoal/60 z-40 transition-opacity duration-300",
           {
-            "opacity-50 pointer-events-auto": open,
+            "opacity-100 pointer-events-auto": open,
             "opacity-0 pointer-events-none": !open,
           }
         )}
         onClick={onClose}
       />
+
+      {/* Sidebar Panel */}
       <div
         className={clsx(
-          "fixed top-0 left-0 z-50 min-h-screen w-72 flex-col bg-black gap-4 px-6 transition-transform duration-300",
+          "fixed top-0 left-0 z-50 min-h-screen w-80 flex-col bg-cream transition-transform duration-300",
           {
             "translate-x-0": open,
             "-translate-x-full": !open,
           }
         )}
       >
-        <div className="w-full flex items-center justify-between py-6 mb-6">
-          <h2 className="text-white font-bold text-xl">Gabi Fixes</h2>
-          <button onClick={onClose} aria-label="Close sidebar">
-            <XMarkIcon className="w-6 h-6 text-white" />
+        {/* Header */}
+        <div className="w-full flex items-center justify-between py-6 px-6 border-b border-stone/10">
+          <span className="font-serif text-2xl text-charcoal tracking-wide">
+            Gabi Fixes
+          </span>
+          <button
+            onClick={onClose}
+            aria-label="Close sidebar"
+            className="p-2 text-charcoal hover:text-forest transition-colors"
+          >
+            <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="flex flex-col gap-6">
+        {/* Navigation */}
+        <div className="flex flex-col gap-1 px-4 py-6">
           {categoryIcons.map(({ href, label, icon: Icon }) => (
             <Link
               key={label}
               href={href}
-              className="group flex items-center gap-4"
+              className="group flex items-center gap-4 px-4 py-4 hover:bg-cream-dark transition-colors"
               onClick={onClose}
             >
-              <div className="w-6 flex justify-center">
-                <Icon className="text-white h-6 w-6 group-hover:text-green-500 transition-colors" />
-              </div>
-              <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+              <Icon className="text-stone h-5 w-5 group-hover:text-forest transition-colors" />
+              <span className="text-charcoal text-sm tracking-wide group-hover:text-forest transition-colors">
                 {label}
               </span>
             </Link>
           ))}
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col gap-6">
+        {/* Divider */}
+        <div className="border-t border-stone/10 mx-6" />
+
+        {/* Account Links */}
+        <div className="flex flex-col gap-1 px-4 py-6">
           <Link
-            href={"/home/profile"}
-            className="group flex items-center gap-4"
+            href="/home/profile"
+            className="group flex items-center gap-4 px-4 py-4 hover:bg-cream-dark transition-colors"
             onClick={onClose}
           >
-            <div className="w-6 flex justify-center">
-              <UserIcon className="w-6 h-6 text-white group-hover:text-green-500 transition-colors" />
-            </div>
-            <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+            <UserIcon className="w-5 h-5 text-stone group-hover:text-forest transition-colors" />
+            <span className="text-charcoal text-sm tracking-wide group-hover:text-forest transition-colors">
               Profile
             </span>
           </Link>
           <Link
-            href={"/home/profile"}
-            className="group flex items-center gap-4"
+            href="/home/profile"
+            className="group flex items-center gap-4 px-4 py-4 hover:bg-cream-dark transition-colors"
             onClick={onClose}
           >
-            <div className="w-6 flex justify-center">
-              <WrenchIcon className="w-6 h-6 text-white group-hover:text-green-500 transition-colors" />
-            </div>
-            <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+            <WrenchIcon className="w-5 h-5 text-stone group-hover:text-forest transition-colors" />
+            <span className="text-charcoal text-sm tracking-wide group-hover:text-forest transition-colors">
               Settings
             </span>
           </Link>
           <Link
-            href={"/login"}
-            className="group flex items-center gap-4"
+            href="/login"
+            className="group flex items-center gap-4 px-4 py-4 hover:bg-cream-dark transition-colors"
             onClick={onClose}
           >
-            <div className="w-6 flex justify-center">
-              <ArrowLeftEndOnRectangleIcon className="w-6 h-6 text-white group-hover:text-green-500 transition-colors" />
-            </div>
-            <span className="text-green-600 font-medium group-hover:text-white transition-colors">
+            <ArrowLeftEndOnRectangleIcon className="w-5 h-5 text-stone group-hover:text-forest transition-colors" />
+            <span className="text-charcoal text-sm tracking-wide group-hover:text-forest transition-colors">
               Logout
             </span>
           </Link>

@@ -19,14 +19,14 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
   const allPages = generatePagination(currentPage, totalPages);
 
   return (
-    <div className="inline-flex">
+    <div className="inline-flex items-center gap-2">
       <PaginationArrow
         direction="left"
         href={createPageURL(currentPage - 1)}
         isDisabled={currentPage <= 1}
       />
 
-      <div className="flex -space-x-px">
+      <div className="flex gap-1">
         {allPages.map((page, index) => {
           let position: "first" | "last" | "single" | "middle" | undefined;
 
@@ -68,14 +68,11 @@ function PaginationNumber({
   isActive: boolean;
 }) {
   const className = clsx(
-    "flex h-10 w-10 items-center justify-center text-sm border",
+    "flex h-10 w-10 items-center justify-center text-sm transition-colors",
     {
-      "rounded-l-md": position === "first" || position === "single",
-      "rounded-r-md": position === "last" || position === "single",
-      "z-10 bg-green-600 border-green-600 text-white": isActive,
-      "hover:bg-gray-100 dark:hover:bg-gray-800":
-        !isActive && position !== "middle",
-      "text-gray-300": position === "middle",
+      "bg-forest text-cream": isActive,
+      "text-charcoal hover:bg-cream-dark": !isActive && position !== "middle",
+      "text-stone": position === "middle",
     }
   );
 
@@ -98,20 +95,18 @@ function PaginationArrow({
   isDisabled?: boolean;
 }) {
   const className = clsx(
-    "flex h-10 w-10 items-center justify-center rounded-md border",
+    "flex h-10 w-10 items-center justify-center transition-colors",
     {
-      "pointer-events-none text-gray-300": isDisabled,
-      "hover:bg-gray-100 dark:hover:bg-gray-800": !isDisabled,
-      "mr-2 md:mr-4": direction === "left",
-      "ml-2 md:ml-4": direction === "right",
+      "pointer-events-none text-stone/40": isDisabled,
+      "text-charcoal hover:bg-cream-dark": !isDisabled,
     }
   );
 
   const icon =
     direction === "left" ? (
-      <ChevronLeftIcon className="w-4" />
+      <ChevronLeftIcon className="w-5 h-5" strokeWidth={1.5} />
     ) : (
-      <ChevronRightIcon className="w-4" />
+      <ChevronRightIcon className="w-5 h-5" strokeWidth={1.5} />
     );
 
   return isDisabled ? (
@@ -124,27 +119,18 @@ function PaginationArrow({
 }
 
 const generatePagination = (currentPage: number, totalPages: number) => {
-  // If the total number of pages is 7 or less,
-  // display all pages without any ellipsis.
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
-  // If the current page is among the first 3 pages,
-  // show the first 3, an ellipsis, and the last 2 pages.
   if (currentPage <= 3) {
     return [1, 2, 3, "...", totalPages - 1, totalPages];
   }
 
-  // If the current page is among the last 3 pages,
-  // show the first 2, an ellipsis, and the last 3 pages.
   if (currentPage >= totalPages - 2) {
     return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
   }
 
-  // If the current page is somewhere in the middle,
-  // show the first page, an ellipsis, the current page and its neighbors,
-  // another ellipsis, and the last page.
   return [
     1,
     "...",
