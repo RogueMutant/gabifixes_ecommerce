@@ -3,15 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, easing: "easeOut" },
+  },
 };
 
 const fadeIn = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" } },
+  visible: { opacity: 1, transition: { duration: 0.8, easing: "easeOut" } },
 };
 
 const intentCategories = [
@@ -36,26 +41,73 @@ const intentCategories = [
 ];
 
 export default function Home() {
+  useEffect(() => {
+    // Add structured data for WebSite
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Gabi Fixes",
+      url: "https://gabifixes.com",
+      description:
+        "Premium skincare and beauty products for radiant, healthy skin.",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: "https://gabifixes.com/home?search={search_term_string}",
+        "query-input": "required name=search_term_string",
+      },
+    });
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-cream">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/90 backdrop-blur-sm">
         <div className="flex items-center justify-between px-8 py-6 max-w-[1800px] mx-auto">
-          <Link href="/" className="font-serif text-2xl text-forest tracking-wide">
-            Gabi Fixes
+          <Link
+            href="/"
+            className="flex items-center gap-3 font-serif text-2xl text-forest tracking-wide"
+          >
+            <Image
+              src="/My-logo.png"
+              alt="Gabi Fixes logo"
+              width={40}
+              height={40}
+              className="rounded-full object-cover"
+              priority
+            />
+            <span>Gabi Fixes</span>
           </Link>
           <div className="hidden md:flex items-center gap-12">
-            <Link href="/home" className="text-sm text-charcoal hover:text-forest transition-colors tracking-wide">
+            <Link
+              href="/home"
+              className="text-sm text-charcoal hover:text-forest transition-colors tracking-wide"
+            >
               Shop
             </Link>
-            <Link href="/home" className="text-sm text-charcoal hover:text-forest transition-colors tracking-wide">
+            <Link
+              href="/home"
+              className="text-sm text-charcoal hover:text-forest transition-colors tracking-wide"
+            >
               Story
             </Link>
-            <Link href="/home" className="text-sm text-charcoal hover:text-forest transition-colors tracking-wide">
+            <Link
+              href="/home"
+              className="text-sm text-charcoal hover:text-forest transition-colors tracking-wide"
+            >
               Rituals
             </Link>
           </div>
-          <Link href="/home" className="text-sm text-charcoal hover:text-forest transition-colors">
+          <Link
+            href="/home"
+            className="text-sm text-charcoal hover:text-forest transition-colors"
+          >
             Cart (0)
           </Link>
         </div>
@@ -106,7 +158,7 @@ export default function Home() {
           variants={fadeIn}
         >
           <Image
-            src="/hero-serum.jpg"
+            src="/mk_artist_2.jpg"
             alt="Restorative Radiance Serum"
             fill
             className="object-cover"
@@ -183,7 +235,7 @@ export default function Home() {
               variants={fadeIn}
             >
               <Image
-                src="/product-highlight.jpg"
+                src="/hello_glow_body_butter.jpg"
                 alt="Botanical Face Cream"
                 fill
                 className="object-cover"
@@ -208,8 +260,8 @@ export default function Home() {
               </h2>
               <p className="text-stone leading-relaxed mb-6">
                 Each formulation begins with a single question: what does skin
-                truly need? We source the finest botanicals from sustainable farms,
-                blending ancient wisdom with modern science.
+                truly need? We source the finest botanicals from sustainable
+                farms, blending ancient wisdom with modern science.
               </p>
               <p className="text-stone leading-relaxed mb-10">
                 Our Botanical Face Cream embodies this philosophy. Rich yet
@@ -249,10 +301,7 @@ export default function Home() {
               </div>
 
               {/* Text */}
-              <motion.div
-                className="flex-1 lg:pr-24"
-                variants={fadeInUp}
-              >
+              <motion.div className="flex-1 lg:pr-24" variants={fadeInUp}>
                 <span className="text-sm text-stone tracking-widest uppercase mb-6 block">
                   Limited Edition
                 </span>
@@ -282,35 +331,83 @@ export default function Home() {
         <div className="max-w-[1800px] mx-auto px-8 lg:px-16">
           <div className="flex flex-col md:flex-row justify-between items-start gap-12">
             <div>
-              <Link href="/" className="font-serif text-2xl text-forest tracking-wide">
+              <Link
+                href="/"
+                className="font-serif text-2xl text-forest tracking-wide"
+              >
                 Gabi Fixes
               </Link>
               <p className="text-stone text-sm mt-4 max-w-xs">
-                Premium skincare crafted with intention, for skin that glows from within.
+                Premium skincare crafted with intention, for skin that glows
+                from within.
               </p>
             </div>
             <div className="flex gap-16">
               <div>
                 <h4 className="text-charcoal text-sm font-medium mb-4">Shop</h4>
                 <ul className="space-y-3">
-                  <li><Link href="/home" className="text-stone text-sm hover:text-forest transition-colors">All Products</Link></li>
-                  <li><Link href="/home" className="text-stone text-sm hover:text-forest transition-colors">Serums</Link></li>
-                  <li><Link href="/home" className="text-stone text-sm hover:text-forest transition-colors">Moisturizers</Link></li>
+                  <li>
+                    <Link
+                      href="/home"
+                      className="text-stone text-sm hover:text-forest transition-colors"
+                    >
+                      All Products
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/home"
+                      className="text-stone text-sm hover:text-forest transition-colors"
+                    >
+                      Serums
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/home"
+                      className="text-stone text-sm hover:text-forest transition-colors"
+                    >
+                      Moisturizers
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-charcoal text-sm font-medium mb-4">About</h4>
+                <h4 className="text-charcoal text-sm font-medium mb-4">
+                  About
+                </h4>
                 <ul className="space-y-3">
-                  <li><Link href="/home" className="text-stone text-sm hover:text-forest transition-colors">Our Story</Link></li>
-                  <li><Link href="/home" className="text-stone text-sm hover:text-forest transition-colors">Ingredients</Link></li>
-                  <li><Link href="/home" className="text-stone text-sm hover:text-forest transition-colors">Contact</Link></li>
+                  <li>
+                    <Link
+                      href="/home"
+                      className="text-stone text-sm hover:text-forest transition-colors"
+                    >
+                      Our Story
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/home"
+                      className="text-stone text-sm hover:text-forest transition-colors"
+                    >
+                      Ingredients
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/home"
+                      className="text-stone text-sm hover:text-forest transition-colors"
+                    >
+                      Contact
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
           </div>
           <div className="mt-16 pt-8 border-t border-stone/10">
             <p className="text-stone text-xs">
-              &copy; 2025 Gabi Fixes. All rights reserved.
+              &copy; {new Date().getFullYear()} Gabi Fixes. All rights reserved.
             </p>
           </div>
         </div>
