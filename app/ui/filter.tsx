@@ -195,17 +195,17 @@ export function Filter({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-stone/10">
+      <div className="flex flex-col gap-3 mt-4 pt-6 border-t border-stone/10">
         <button
           onClick={applyFilters}
-          className="w-full py-4 bg-forest text-cream text-xs tracking-[0.15em] uppercase font-medium hover:bg-forest-light transition-colors"
+          className="w-full py-4 bg-forest text-cream text-sm tracking-[0.15em] uppercase font-semibold hover:bg-forest-light transition-all shadow-lg shadow-forest/30 hover:shadow-xl hover:shadow-forest/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md"
         >
           Apply Filters
         </button>
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="w-full py-4 border border-stone/30 text-charcoal text-xs tracking-[0.15em] uppercase font-medium hover:border-charcoal transition-colors"
+            className="w-full py-3 border border-stone/30 text-charcoal text-xs tracking-[0.15em] uppercase font-medium hover:border-charcoal hover:bg-stone/5 transition-all"
           >
             Clear All
           </button>
